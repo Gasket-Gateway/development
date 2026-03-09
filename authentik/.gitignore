@@ -1,0 +1,5 @@
+certs/
+custom-templates/
+data/
+.env
+docker-compose.yaml
