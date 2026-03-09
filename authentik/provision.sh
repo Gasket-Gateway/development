@@ -305,22 +305,6 @@ create_oidc_app_group \
     "https://opensearch-dashboard.gasket-dev.local/auth/openid/login" \
     "$ADMINS_GROUP_PK"
 
-# Code Server 1/2/3 — each bound to one specific user only
-# Two-layer restriction: Authentik app policy (primary) + oauth2-proxy --allowed-email (secondary)
-# Credentials match code-server-1/2/3/.env
-log "  Creating per-user Code Server apps..."
-declare -A USER_PKS=([1]="$USER1_PK" [2]="$USER2_PK" [3]="$USER3_PK")
-for i in 1 2 3; do
-    prov_pk=$(create_provider \
-        "code-server-$i" \
-        "code-server-${i}-client-id" \
-        "code-server-${i}-client-secret" \
-        "https://code-${i}.gasket-dev.local/oauth2/callback")
-    app_pk=$(create_application "Code Server $i" "code-server-$i" "$prov_pk")
-    bind_user "$app_pk" "${USER_PKS[$i]}"
-    ok "  ✓ Code Server $i → user$i only"
-done
-
 # ─── Done ────────────────────────────────────────────────────────────────────
 
 echo ""
@@ -335,9 +319,6 @@ ok ""
 ok "  App access:"
 ok "    Gasket Gateway       → gasket-users  (user2, user3)"
 ok "    Open WebUI           → test-users    (user1, user2, user3)"
-ok "    Code Server 1        → user1 only"
-ok "    Code Server 2        → user2 only"
-ok "    Code Server 3        → user3 only"
 ok "    Grafana              → gasket-admins (user3)"
 ok "    OpenSearch Dashboards→ gasket-admins (user3)"
 ok "════════════════════════════════════════════"

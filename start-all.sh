@@ -33,9 +33,6 @@ preflight_dns() {
     ollama-external-metrics.gasket-dev.local
     ollama-internal.gasket-dev.local
     ollama-internal-metrics.gasket-dev.local
-    code-1.gasket-dev.local
-    code-2.gasket-dev.local
-    code-3.gasket-dev.local
   )
 
   local failed=()
@@ -89,11 +86,6 @@ run "Ollama (internal)" ollama-internal
 
 # 6. Open WebUI — uses Gasket as its OpenAI backend
 run "Open WebUI"        open-webui
-
-# 7. Code Server — one per test user, each with dedicated oauth2-proxy
-run "Code Server 1 (user1)" code-server-1
-run "Code Server 2 (user2)" code-server-2
-run "Code Server 3 (user3)" code-server-3
 
 echo ""
 echo "══════════════════════════════════════"
