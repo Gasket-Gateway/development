@@ -1,14 +1,17 @@
 services:
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:main
-    container_name: open-webui
-    ports:
-      - "3001:8080"
-    env_file:
-      - .env
-    volumes:
-      - ./open-webui-data:/app/backend/data
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
     restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8082:8082" # Prometheus metrics
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - ./dynamic:/etc/traefik/dynamic:ro
+      - ./certs:/certs:ro
     extra_hosts:
       - "host.docker.internal:host-gateway"
       - "portal.gasket-dev.local:host-gateway"

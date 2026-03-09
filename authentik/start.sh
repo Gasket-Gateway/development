@@ -1,32 +1,27 @@
 #!/bin/bash
-set -e # Exit on error
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+DC="docker compose -f docker-compose.yaml -f docker-compose.override.yaml"
 
 # --- Helpers ---
 log() { echo -e "\e[34m[*]\e[0m $1"; }
 ok()  { echo -e "\e[32m[+]\e[0m $1"; }
-err() { 
-    echo -e "\e[31m[-]\e[0m $1" >&2
-    exit 1 
-}
+err() { echo -e "\e[31m[-]\e[0m $1" >&2; exit 1; }
 
-# Configuration
 COMPOSE_URL="https://docs.goauthentik.io/compose.yml"
 ADMIN_EMAIL="admin@localhost"
 ADMIN_PASS="password"
 
-# 1. Manifest Management
+# 1. Fetch compose manifest if not present (re-run reset.sh to force re-fetch)
 if [ ! -f docker-compose.yaml ]; then
     log "Fetching compose manifest..."
     curl -sL "$COMPOSE_URL" -o docker-compose.yaml
 fi
 
-# 2. State Reset (Volumes and local mounts)
-log "Resetting local state..."
-docker compose down -v --remove-orphans &>/dev/null
-rm -rf ./data ./certs ./custom-templates
-
-# 3. Environment Preparation
-# Using -n to avoid overwriting secrets if you manually edit .env later
+# 2. Generate .env if not present (re-run reset.sh to clear secrets)
 if [ ! -f .env ]; then
     log "Generating fresh secrets..."
     cat <<EOF > .env
@@ -44,27 +39,24 @@ AUTHENTIK_WORKER__THREADS=2
 EOF
 fi
 
-# 4. Container Lifecycle
-log "Orchestrating containers (Pulling & Starting)..."
-docker compose pull -q # -q keeps the pull logs clean
-docker compose up -d
+log "Starting containers..."
+$DC up -d
 
-log "Waiting for services to pass health checks..."
+# 4. Wait for all containers to be healthy
+log "Waiting for containers to become healthy..."
 TIMEOUT=600
 ELAPSED=0
-
-until docker compose ps --format json | jq -s 'flatten | map(select(.Health == "healthy")) | length' | grep -q "^$(docker compose ps --format json | jq -s 'flatten | length')$"; do
+until $DC ps --format json \
+    | jq -s 'flatten | map(select(.Health == "healthy")) | length' \
+    | grep -q "^$($DC ps --format json | jq -s 'flatten | length')$"; do
     if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
         echo ""
-        err "Timeout reached. Some containers failed to become healthy."
+        err "Timeout waiting for healthy containers."
     fi
-    echo -n "."
-    sleep 5
-    ((ELAPSED+=5))
+    echo -n "."; sleep 5; ((ELAPSED+=5))
 done
-
 echo ""
 
-# 5. Readiness Handover
-log "Handing off to provisioner..."
-bash provision.sh
+# # 5. Hand off to provisioner
+# log "Handing off to provisioner..."
+# bash provision.sh

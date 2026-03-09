@@ -1,0 +1,64 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Gasket portal — scrape via Traefik (load-balanced across all healthy instances)
+  - job_name: gasket
+    static_configs:
+      - targets:
+          - portal.gasket-dev.local
+        labels:
+          service: gasket
+    metrics_path: /metrics
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true
+
+  # Traefik — via dedicated metrics hostname
+  - job_name: traefik
+    static_configs:
+      - targets:
+          - traefik-metrics.gasket-dev.local
+        labels:
+          service: traefik
+    metrics_path: /metrics
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true
+
+  # Authentik — via dedicated metrics hostname (port 9300)
+  - job_name: authentik
+    static_configs:
+      - targets:
+          - authentik-metrics.gasket-dev.local
+        labels:
+          service: authentik
+    metrics_path: /metrics
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true
+
+  # Ollama external — via dedicated metrics hostname
+  - job_name: ollama-external
+    static_configs:
+      - targets:
+          - ollama-external-metrics.gasket-dev.local
+        labels:
+          service: ollama-external
+    metrics_path: /metrics
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true
+
+  # Ollama internal — via dedicated metrics hostname
+  - job_name: ollama-internal
+    static_configs:
+      - targets:
+          - ollama-internal-metrics.gasket-dev.local
+        labels:
+          service: ollama-internal
+    metrics_path: /metrics
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true

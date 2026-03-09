@@ -1,0 +1,47 @@
+# This override is merged on top of the base docker-compose.yaml (whether hand-authored
+# or freshly fetched from https://docs.goauthentik.io/compose.yml).
+# It adds extra_hosts for *.gasket-dev.local DNS resolution, and exposes the
+# Authentik metrics port (9300) to the host so Traefik can proxy it.
+services:
+  server:
+    ports:
+      - "9300:9300"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "portal.gasket-dev.local:host-gateway"
+      - "traefik.gasket-dev.local:host-gateway"
+      - "authentik.gasket-dev.local:host-gateway"
+      - "opensearch.gasket-dev.local:host-gateway"
+      - "opensearch-dashboard.gasket-dev.local:host-gateway"
+      - "prometheus.gasket-dev.local:host-gateway"
+      - "grafana.gasket-dev.local:host-gateway"
+      - "open-webui.gasket-dev.local:host-gateway"
+      - "ollama-external.gasket-dev.local:host-gateway"
+      - "ollama-internal.gasket-dev.local:host-gateway"
+      - "code-1.gasket-dev.local:host-gateway"
+      - "code-2.gasket-dev.local:host-gateway"
+      - "code-3.gasket-dev.local:host-gateway"
+      - "traefik-metrics.gasket-dev.local:host-gateway"
+      - "authentik-metrics.gasket-dev.local:host-gateway"
+      - "ollama-external-metrics.gasket-dev.local:host-gateway"
+      - "ollama-internal-metrics.gasket-dev.local:host-gateway"
+  worker:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "portal.gasket-dev.local:host-gateway"
+      - "traefik.gasket-dev.local:host-gateway"
+      - "authentik.gasket-dev.local:host-gateway"
+      - "opensearch.gasket-dev.local:host-gateway"
+      - "opensearch-dashboard.gasket-dev.local:host-gateway"
+      - "prometheus.gasket-dev.local:host-gateway"
+      - "grafana.gasket-dev.local:host-gateway"
+      - "open-webui.gasket-dev.local:host-gateway"
+      - "ollama-external.gasket-dev.local:host-gateway"
+      - "ollama-internal.gasket-dev.local:host-gateway"
+      - "code-1.gasket-dev.local:host-gateway"
+      - "code-2.gasket-dev.local:host-gateway"
+      - "code-3.gasket-dev.local:host-gateway"
+      - "traefik-metrics.gasket-dev.local:host-gateway"
+      - "authentik-metrics.gasket-dev.local:host-gateway"
+      - "ollama-external-metrics.gasket-dev.local:host-gateway"
+      - "ollama-internal-metrics.gasket-dev.local:host-gateway"

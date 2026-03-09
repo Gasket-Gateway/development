@@ -1,8 +1,28 @@
 services:
   ollama:
     image: ollama/ollama:latest
+    container_name: ollama-external
     ports:
       - "12434:11434"
     volumes:
       - ./ollama_data:/root/.ollama
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "portal.gasket-dev.local:host-gateway"
+      - "traefik.gasket-dev.local:host-gateway"
+      - "authentik.gasket-dev.local:host-gateway"
+      - "opensearch.gasket-dev.local:host-gateway"
+      - "opensearch-dashboard.gasket-dev.local:host-gateway"
+      - "prometheus.gasket-dev.local:host-gateway"
+      - "grafana.gasket-dev.local:host-gateway"
+      - "open-webui.gasket-dev.local:host-gateway"
+      - "ollama-external.gasket-dev.local:host-gateway"
+      - "ollama-internal.gasket-dev.local:host-gateway"
+      - "code-1.gasket-dev.local:host-gateway"
+      - "code-2.gasket-dev.local:host-gateway"
+      - "code-3.gasket-dev.local:host-gateway"
+      - "traefik-metrics.gasket-dev.local:host-gateway"
+      - "authentik-metrics.gasket-dev.local:host-gateway"
+      - "ollama-external-metrics.gasket-dev.local:host-gateway"
+      - "ollama-internal-metrics.gasket-dev.local:host-gateway"

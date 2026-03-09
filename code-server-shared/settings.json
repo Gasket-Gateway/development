@@ -1,0 +1,35 @@
+{
+    "chat.agent.enabled": false,
+    "chat.commandCenter.enabled": false,
+    "chat.mcp.discovery.enabled": {
+        "claude-desktop": false,
+        "windsurf": false,
+        "cursor-global": false,
+        "cursor-workspace": false
+    },
+    "accessibility.verbosity.inlineChat": false,
+    "accessibility.verbosity.panelChat": false,
+    "chat.disableAIFeatures": true,
+    "extensions.ignoreRecommendations": true,
+    "workbench.colorTheme": "Default Dark Modern",
+    "telemetry.telemetryLevel": "off",
+    "workbench.editor.empty.hint": "hidden",
+    "workbench.welcomePage.walkthroughs.openOnInstall": false,
+    "workbench.startupEditor": "terminal",
+    "window.title": "${dirty}${folderName}",
+    "window.commandCenter": false,
+    "[dockercompose]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        },
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    }
+}
