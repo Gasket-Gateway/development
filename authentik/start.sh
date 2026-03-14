@@ -59,4 +59,4 @@ echo ""
 
 # # 5. Hand off to provisioner
 # log "Handing off to provisioner..."
-# bash provision.sh
+bash provision.sh

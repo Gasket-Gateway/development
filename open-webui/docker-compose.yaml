@@ -6,8 +6,12 @@ services:
       - "3001:8080"
     env_file:
       - .env
+    environment:
+      - SSL_CERT_FILE=/usr/local/share/ca-certificates/local.crt
+      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/local.crt
     volumes:
-      - ./open-webui-data:/app/backend/data
+      - open_webui_data:/app/backend/data
+      - ../traefik/certs/local.crt:/usr/local/share/ca-certificates/local.crt:ro
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -21,10 +25,10 @@ services:
       - "open-webui.gasket-dev.local:host-gateway"
       - "ollama-external.gasket-dev.local:host-gateway"
       - "ollama-internal.gasket-dev.local:host-gateway"
-      - "code-1.gasket-dev.local:host-gateway"
-      - "code-2.gasket-dev.local:host-gateway"
-      - "code-3.gasket-dev.local:host-gateway"
       - "traefik-metrics.gasket-dev.local:host-gateway"
       - "authentik-metrics.gasket-dev.local:host-gateway"
-      - "ollama-external-metrics.gasket-dev.local:host-gateway"
-      - "ollama-internal-metrics.gasket-dev.local:host-gateway"
+      - "api.gasket-dev.local:host-gateway"
+
+volumes:
+  open_webui_data:
+    driver: local

@@ -38,27 +38,3 @@ scrape_configs:
     scheme: https
     tls_config:
       insecure_skip_verify: true
-
-  # Ollama external — via dedicated metrics hostname
-  - job_name: ollama-external
-    static_configs:
-      - targets:
-          - ollama-external-metrics.gasket-dev.local
-        labels:
-          service: ollama-external
-    metrics_path: /metrics
-    scheme: https
-    tls_config:
-      insecure_skip_verify: true
-
-  # Ollama internal — via dedicated metrics hostname
-  - job_name: ollama-internal
-    static_configs:
-      - targets:
-          - ollama-internal-metrics.gasket-dev.local
-        labels:
-          service: ollama-internal
-    metrics_path: /metrics
-    scheme: https
-    tls_config:
-      insecure_skip_verify: true

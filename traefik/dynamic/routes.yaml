@@ -65,47 +65,23 @@ http:
       tls: {}
       service: ollama-external
 
-    ollama-external-metrics:
-      rule: "Host(`ollama-external-metrics.gasket-dev.local`)"
-      entryPoints: [websecure]
-      tls: {}
-      service: ollama-external-metrics
-
     ollama-internal:
       rule: "Host(`ollama-internal.gasket-dev.local`)"
       entryPoints: [websecure]
       tls: {}
       service: ollama-internal
 
-    ollama-internal-metrics:
-      rule: "Host(`ollama-internal-metrics.gasket-dev.local`)"
-      entryPoints: [websecure]
-      tls: {}
-      service: ollama-internal-metrics
-
-    code-1:
-      rule: "Host(`code-1.gasket-dev.local`)"
-      entryPoints: [websecure]
-      tls: {}
-      service: code-1
-
-    code-2:
-      rule: "Host(`code-2.gasket-dev.local`)"
-      entryPoints: [websecure]
-      tls: {}
-      service: code-2
-
-    code-3:
-      rule: "Host(`code-3.gasket-dev.local`)"
-      entryPoints: [websecure]
-      tls: {}
-      service: code-3
-
     gasket-portal:
       rule: "Host(`portal.gasket-dev.local`)"
       entryPoints: [websecure]
       tls: {}
       service: gasket-portal
+    
+    gasket-api:
+      rule: "Host(`api.gasket-dev.local`)"
+      entryPoints: [websecure]
+      tls: {}
+      service: gasket-api
 
   services:
     authentik:
@@ -154,37 +130,23 @@ http:
         servers:
           - url: "http://host.docker.internal:12434"
 
-    ollama-external-metrics:
-      loadBalancer:
-        servers:
-          - url: "http://host.docker.internal:12434"
-
     ollama-internal:
       loadBalancer:
         servers:
           - url: "http://host.docker.internal:11434"
 
-    ollama-internal-metrics:
-      loadBalancer:
-        servers:
-          - url: "http://host.docker.internal:11434"
-
-    code-1:
-      loadBalancer:
-        servers:
-          - url: "http://host.docker.internal:4180"
-
-    code-2:
-      loadBalancer:
-        servers:
-          - url: "http://host.docker.internal:4181"
-
-    code-3:
-      loadBalancer:
-        servers:
-          - url: "http://host.docker.internal:4182"
-
     gasket-portal:
+      loadBalancer:
+        healthCheck:
+          path: /health
+          interval: "10s"
+          timeout: "3s"
+        servers:
+          - url: "http://host.docker.internal:5000"
+          - url: "http://host.docker.internal:5001"
+          - url: "http://host.docker.internal:5002"
+    
+    gasket-api:
       loadBalancer:
         healthCheck:
           path: /health

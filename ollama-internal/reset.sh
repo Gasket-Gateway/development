@@ -3,7 +3,7 @@ set -euo pipefail
 log() { echo -e "\e[34m[*]\e[0m $1"; }
 ok()  { echo -e "\e[32m[+]\e[0m $1"; }
 
-log "Resetting Prometheus state (volumes)..."
+log "Resetting Ollama Internal state (volumes)..."
 docker compose down -v --remove-orphans &>/dev/null || true
-docker volume rm prometheus_data
-ok "Prometheus state cleared. Run start.sh to bring it back up fresh."
+docker volume rm ollama_internal_data
+ok "Ollama Internal state cleared. Run start.sh to bring it back up fresh."

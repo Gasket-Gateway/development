@@ -20,6 +20,7 @@ run() {
 preflight_dns() {
   local hosts=(
     portal.gasket-dev.local
+    api.gasket-dev.local
     traefik.gasket-dev.local
     traefik-metrics.gasket-dev.local
     authentik.gasket-dev.local
@@ -30,9 +31,7 @@ preflight_dns() {
     grafana.gasket-dev.local
     open-webui.gasket-dev.local
     ollama-external.gasket-dev.local
-    ollama-external-metrics.gasket-dev.local
     ollama-internal.gasket-dev.local
-    ollama-internal-metrics.gasket-dev.local
   )
 
   local failed=()

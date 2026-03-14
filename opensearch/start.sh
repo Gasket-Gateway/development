@@ -36,3 +36,39 @@ echo "════════════════════════�
 
 log "Starting OpenSearch and Dashboards ..."
 docker compose -f "${SCRIPT_DIR}/docker-compose.yaml" up -d
+
+DASHBOARDS_URL="http://localhost:5601"
+
+# ─── Wait for Dashboards to be ready ─────────────────────────────────────────
+log "Waiting for OpenSearch Dashboards to be ready ..."
+until curl -s -f "${DASHBOARDS_URL}/api/status" &>/dev/null; do
+    echo -n "."; sleep 2
+done
+echo ""
+ok "Dashboards is ready."
+
+# ─── Create index patterns ───────────────────────────────────────────────────
+log "Provisioning index patterns ..."
+
+INDEX_PATTERNS=(
+    "gg-audit-*"
+)
+
+for pattern in "${INDEX_PATTERNS[@]}"; do
+    response=$(curl -s -o /dev/null -w "%{http_code}" \
+        -X POST "${DASHBOARDS_URL}/api/saved_objects/index-pattern/${pattern}" \
+        -H "osd-xsrf: true" \
+        -H "Content-Type: application/json" \
+        -d "{
+            \"attributes\": {
+                \"title\": \"${pattern}\",
+                \"timeFieldName\": \"@timestamp\"
+            }
+        }" 2>/dev/null)
+    if [[ "$response" == "200" || "$response" == "409" ]]; then
+        ok "  ✓ ${pattern}"
+    else
+        err "  Failed to create index pattern '${pattern}' (HTTP ${response})"
+    fi
+done
+

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+
 # Reset all stateful services (wipes volumes, secrets, and downloaded manifests).
 # Run this before start-all.sh to get a completely fresh environment.
 
@@ -19,6 +19,10 @@ run_reset "Authentik"  authentik
 run_reset "OpenSearch" opensearch
 run_reset "Prometheus" prometheus
 run_reset "Grafana"    grafana
+run_reset "Ollama Internal" ollama-internal
+run_reset "Ollama External" ollama-external
+run_reset "Open WebUI" open-webui
+run_reset "Traefik" traefik
 
 echo ""
 echo "══════════════════════════════════════"

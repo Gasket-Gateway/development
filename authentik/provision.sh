@@ -289,22 +289,6 @@ create_oidc_app_group \
     "https://open-webui.gasket-dev.local/oauth/oidc/callback" \
     "$TEST_USERS_PK"
 
-# Grafana — gasket-admins only (user3)
-# Credentials match grafana/.env
-create_oidc_app_group \
-    "Grafana" "grafana" \
-    "grafana-client-id" "grafana-client-secret" \
-    "https://grafana.gasket-dev.local/login/generic_oauth" \
-    "$ADMINS_GROUP_PK"
-
-# OpenSearch Dashboards — gasket-admins only (user3)
-# Note: requires DISABLE_SECURITY_DASHBOARDS_PLUGIN=false to activate OIDC login.
-create_oidc_app_group \
-    "OpenSearch Dashboards" "opensearch-dashboards" \
-    "opensearch-dashboards-client-id" "opensearch-dashboards-client-secret" \
-    "https://opensearch-dashboard.gasket-dev.local/auth/openid/login" \
-    "$ADMINS_GROUP_PK"
-
 # ─── Done ────────────────────────────────────────────────────────────────────
 
 echo ""
@@ -319,6 +303,4 @@ ok ""
 ok "  App access:"
 ok "    Gasket Gateway       → gasket-users  (user2, user3)"
 ok "    Open WebUI           → test-users    (user1, user2, user3)"
-ok "    Grafana              → gasket-admins (user3)"
-ok "    OpenSearch Dashboards→ gasket-admins (user3)"
 ok "════════════════════════════════════════════"
