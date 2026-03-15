@@ -30,6 +30,7 @@ services:
       - "traefik-metrics.gasket-dev.local:host-gateway"
       - "authentik-metrics.gasket-dev.local:host-gateway"
       - "api.gasket-dev.local:host-gateway"
+      - "metrics.gasket-dev.local:host-gateway"
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2
@@ -60,6 +61,7 @@ services:
       - "traefik-metrics.gasket-dev.local:host-gateway"
       - "authentik-metrics.gasket-dev.local:host-gateway"
       - "api.gasket-dev.local:host-gateway"
+      - "metrics.gasket-dev.local:host-gateway"
 
 volumes:
   opensearch_data:

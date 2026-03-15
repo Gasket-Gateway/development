@@ -27,13 +27,25 @@ scrape_configs:
     tls_config:
       insecure_skip_verify: true
 
-  # Authentik — via dedicated metrics hostname (port 9300)
+  # Authentik — via dedicated metrics hostname
   - job_name: authentik
     static_configs:
       - targets:
           - authentik-metrics.gasket-dev.local
         labels:
           service: authentik
+    metrics_path: /metrics
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true
+
+  # Gasket API — via dedicated metrics hostname
+  - job_name: gasket
+    static_configs:
+      - targets:
+          - metrics.gasket-dev.local
+        labels:
+          service: gasket
     metrics_path: /metrics
     scheme: https
     tls_config:

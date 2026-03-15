@@ -83,6 +83,12 @@ http:
       tls: {}
       service: gasket-api
 
+    gasket-metrics:
+      rule: "Host(`metrics.gasket-dev.local`)"
+      entryPoints: [websecure]
+      tls: {}
+      service: gasket-metrics
+
   services:
     authentik:
       loadBalancer:
@@ -156,3 +162,14 @@ http:
           - url: "http://host.docker.internal:5000"
           - url: "http://host.docker.internal:5001"
           - url: "http://host.docker.internal:5002"
+
+    gasket-metrics:
+      loadBalancer:
+        healthCheck:
+          path: /health
+          interval: "10s"
+          timeout: "3s"
+        servers:
+          - url: "http://host.docker.internal:9050"
+          - url: "http://host.docker.internal:9051"
+          - url: "http://host.docker.internal:9052"

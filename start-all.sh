@@ -21,6 +21,7 @@ preflight_dns() {
   local hosts=(
     portal.gasket-dev.local
     api.gasket-dev.local
+    metrics.gasket-dev.local
     traefik.gasket-dev.local
     traefik-metrics.gasket-dev.local
     authentik.gasket-dev.local

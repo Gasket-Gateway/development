@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik:v3.3
+    image: traefik:v3
     container_name: traefik
     restart: unless-stopped
     ports:
@@ -27,3 +27,4 @@ services:
       - "traefik-metrics.gasket-dev.local:host-gateway"
       - "authentik-metrics.gasket-dev.local:host-gateway"
       - "api.gasket-dev.local:host-gateway"
+      - "metrics.gasket-dev.local:host-gateway"

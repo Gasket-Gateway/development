@@ -5,5 +5,5 @@ ok()  { echo -e "\e[32m[+]\e[0m $1"; }
 
 log "Resetting Ollama External state (volumes)..."
 docker compose down -v --remove-orphans &>/dev/null || true
-docker volume rm ollama_external_data
+docker volume rm ollama-external_ollama_external_data
 ok "Ollama External state cleared. Run start.sh to bring it back up fresh."
