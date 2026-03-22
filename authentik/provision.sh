@@ -202,6 +202,25 @@ USER1_PK=$(api_call GET "core/users" | jq -r '.results[] | select(.username == "
 USER2_PK=$(api_call GET "core/users" | jq -r '.results[] | select(.username == "user2") | .pk')
 USER3_PK=$(api_call GET "core/users" | jq -r '.results[] | select(.username == "user3") | .pk')
 
+# Create app password tokens for ROPC testing (client_credentials grant)
+log "Creating app password tokens for ROPC testing..."
+docker compose exec -T server python3 manage.py shell <<'PYEOF' > /dev/null
+from authentik.core.models import User, Token
+
+for username, token_key in [("user2", "user2-app-password"), ("user3", "user3-app-password")]:
+    user = User.objects.get(username=username)
+    Token.objects.update_or_create(
+        identifier=f"{username}-app-token",
+        user=user,
+        defaults={
+            "intent": "app_password",
+            "expiring": False,
+            "key": token_key,
+        },
+    )
+PYEOF
+ok "  App tokens: user2-app-password, user3-app-password"
+
 # ─── 4. Groups ───────────────────────────────────────────────────────────────
 
 log "Configuring groups..."
@@ -231,7 +250,7 @@ log "Fetching default flows..."
 FLOW_AUTH=$(api_call GET "flows/instances" \
     | jq -r '.results[] | select(.slug == "default-authentication-flow") | .pk')
 FLOW_AUTHZ=$(api_call GET "flows/instances" \
-    | jq -r '.results[] | select(.slug == "default-provider-authorization-explicit-consent") | .pk')
+    | jq -r '.results[] | select(.slug == "default-provider-authorization-implicit-consent") | .pk')
 FLOW_INVAL=$(api_call GET "flows/instances" \
     | jq -r '.results[] | select(.slug == "default-invalidation-flow") | .pk')
 
@@ -280,6 +299,19 @@ create_oidc_app_group \
     "gg-client-id" "gg-client-secret" \
     "https://portal.gasket-dev.local/auth/callback" \
     "$USERS_GROUP_PK"
+
+# Enable ROPC (password grant) on the Gasket Gateway provider for automated testing.
+# The API doesn't expose grant types directly, so we patch via the Django ORM.
+log "  Enabling ROPC (password grant) on Gasket Gateway provider..."
+docker compose exec -T server python3 manage.py shell <<'PYEOF' > /dev/null
+from authentik.providers.oauth2.models import OAuth2Provider
+prov = OAuth2Provider.objects.filter(name='gasket-gateway-provider').first()
+if prov:
+    # Include claims in ID token for ROPC (no userinfo roundtrip)
+    prov.include_claims_in_id_token = True
+    prov.save()
+PYEOF
+ok "  ✓ ROPC enabled on Gasket Gateway provider"
 
 # Open WebUI — test-users (all 3 users)
 # Credentials match open-webui/.env
