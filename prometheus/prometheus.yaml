@@ -3,18 +3,6 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  # Gasket portal — scrape via Traefik (load-balanced across all healthy instances)
-  - job_name: gasket
-    static_configs:
-      - targets:
-          - portal.gasket-dev.local
-        labels:
-          service: gasket
-    metrics_path: /metrics
-    scheme: https
-    tls_config:
-      insecure_skip_verify: true
-
   # Traefik — via dedicated metrics hostname
   - job_name: traefik
     static_configs:
